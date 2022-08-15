@@ -3,14 +3,23 @@ const bp = require('body-parser')
 const config = require('config');
 const debug = require('debug')('app:startup');
 const express = require('express');
-const genders = require('./routes/genders');
+const genres = require('./routes/genres');
+const customer = require('./routes/customers');
 const home = require('./routes/home');
 const helmet = require('helmet');
 const logger = require('./middleware/logger');
 const morgan = require('morgan');
+const mongoose = require('mongoose');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+
+// connection
+mongoose.connect('mongodb://localhost/vidly')
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error(' Could not connected to MongoDB: ', err))
+
 
 // formas de obtener el entorno
 // console.log(`NODE_ENV: ${process.env.NODE_ENV}`) // default undefined
@@ -32,22 +41,19 @@ app.set('views', './views'); // ruta de los templates
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(helmet());
-app.use(logger);
-app.use(authentication);
+// app.use(logger); middleaware
+// app.use(authentication); middleware
 
-app.use('/api/genders', genders);
+app.use('/api/genres', genres);
+app.use('/api/customers', customer);
 app.use('/', home);
 
 
 // Configuration
-console.log('Application Name: ' + config.get('name'));
-console.log('Mail Server: ' + config.get('mail.host'));
+// console.log('Application Name: ' + config.get('name'));
+// console.log('Mail Server: ' + config.get('mail.host'));
 // console.log('Mail Password: ' + config.get('mail.password'));
 
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
-
-
-
-
 
