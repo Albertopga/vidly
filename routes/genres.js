@@ -26,8 +26,8 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     const reqValidation = validateBody(req.body);
-
     if(reqValidation.error) return res.status(404).send(reqValidation.error.details[0].message);
+
     const genre = await Genre.findByIdAndUpdate(req.params.id, { name: req.name }, { new: true });
 
     if(!genreToEdit) return res.status(404).send('genre to edit not found');

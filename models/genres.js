@@ -21,5 +21,6 @@ const validateBody = (body) => {
     return schema.validate(body);
 };
 
+module.exports.genreSchema = genreSchema;
 module.exports.Genre = Genre;
 module.exports.validateBody = validateBody;
