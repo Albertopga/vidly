@@ -4,7 +4,7 @@ const { genreSchema } = require('./genres')
 
 const movieSchema = new mongoose.Schema({
     title: { type: String, required: true, minlength: 2, maxlength: 255, trim: true },
-    genre: { type: genreSchema, required: true,  },
+    genre: { type: genreSchema, required: true },
     numberInStock: { type: Number, required: true, minlength: 0, maxlength: 255 },
     dailyRentalRate: { type: Number, required: true, minlength: 0, maxlength: 255 }
 });
@@ -23,4 +23,5 @@ function validateMovie(movie) {
 }
 
 exports.Movie = Movie;
+exports.movieSchema = movieSchema;
 exports.validate = validateMovie;
