@@ -5,6 +5,7 @@ const debug = require('debug')('app:startup');
 const express = require('express');
 const genres = require('./routes/genres');
 const customer = require('./routes/customers');
+const movies = require('./routes/movies');
 const home = require('./routes/home');
 const helmet = require('helmet');
 const logger = require('./middleware/logger');
@@ -46,6 +47,7 @@ app.use(helmet());
 
 app.use('/api/genres', genres);
 app.use('/api/customers', customer);
+app.use('/api/movies', movies);
 app.use('/', home);
 
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const { Genre } = require('../models/genres');
 const router = express.Router();
-const { Movie, validateBody } = require('../models/movies');
+const { Movie, validate } = require('../models/movies');
 
 router.get('/', async (req, res) => {
     const result = await Movie.find().sort('name');
@@ -16,7 +16,7 @@ router.get('/:id', async(req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const reqValidation = validateBody(req.body);
+    const reqValidation = validate(req.body);
     if(reqValidation.error) return res.status(404).send(reqValidation.error.details[0].message) ;
 
     const genre = await Genre.findById(req.body.genreId);
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-    const reqValidation = validateBody(req.body);
+    const reqValidation = validate(req.body);
     if(reqValidation.error) return res.status(404).send(reqValidation.error.details[0].message);
 
     const movie = await Movie.findByIdAndUpdate(req.params.id, { name: req.name }, { new: true });
