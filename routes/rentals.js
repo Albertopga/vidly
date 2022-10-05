@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
 	if (!movie) return res.status(400).send('Invalid movie')
 	if (movie.numberInStock === 0) return res.status(400).send('Movie out of stock')
 
-	let rental = new Rental({
+	const rental = new Rental({
 		customer: {
 			_id: customer._id,
 			name: customer.name,

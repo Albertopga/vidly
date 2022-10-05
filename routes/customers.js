@@ -18,12 +18,12 @@ router.post('/', async (req, res) => {
     const reqValidation = validateBody(req.body);
     if(reqValidation.error) return res.status(404).send(reqValidation.error.details[0].message);
 
-    let customer = new Customer( {
+    const customer = new Customer( {
         name: req.body.name,
         phone: req.body.phone,
         isGold: req.body.isGold,
     });
-    customer = await customer.save();
+    await customer.save();
 
     res.status(200).send(customer);
 });

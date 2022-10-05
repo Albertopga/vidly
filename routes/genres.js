@@ -18,8 +18,8 @@ router.post('/', async (req, res) => {
     const reqValidation = validateBody(req.body);
     if(reqValidation.error) return res.status(404).send(reqValidation.error.details[0].message) ;
 
-    let genre = new Genre( {name: req.body.name });
-    genre = await genre.save();
+    const genre = new Genre( {name: req.body.name });
+    await genre.save();
 
     res.status(200).send(genre);
 });

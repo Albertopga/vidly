@@ -17,6 +17,8 @@ const rentals = require('./routes/rentals');
 const app = express();
 const port = process.env.PORT || 3000;
 
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 // connection
 mongoose.connect('mongodb://localhost/vidly')
