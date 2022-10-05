@@ -1,8 +1,13 @@
 const express = require('express')
 const router = express.Router()
+const Fawn = require('fawn')
+
 const { Rental, validate } = require('../models/rentals')
 const { Customer } = require('../models/customer')
 const { Movie } = require('../models/movies')
+
+Fawn.init("mongodb://localhost/vidly")
+
 
 router.get('/', async (req, res) => {
 	const result = await Rental.find().sort('-dateOut')
@@ -30,11 +35,20 @@ router.post('/', async (req, res) => {
 			dailyRentalRate: movie.dailyRentalRate
 		}
 	})
-	rental = await rental.save()
-	movie.numberInStock--
-	movie.save()
+	const itemToUpdate = { _id: movie._id }
+	const paramsToUpdate = { $inc: { numberInStock: -1 } }
 
-	res.send(rental)
+	// esto simula una transaccion
+	try {
+		new Fawn.Task()
+			.save('rentals', rental)
+			.update('movies', itemToUpdate, paramsToUpdate)
+			.run()
+
+			res.send(rental)
+	} catch (error) {
+		res.status(500).send('Something went wrong')
+	}
 })
 
 module.exports = router;
