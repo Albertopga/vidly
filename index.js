@@ -3,14 +3,16 @@ const bp = require('body-parser')
 const config = require('config');
 const debug = require('debug')('app:startup');
 const express = require('express');
-const genres = require('./routes/genres');
-const customer = require('./routes/customers');
-const movies = require('./routes/movies');
-const home = require('./routes/home');
 const helmet = require('helmet');
 const logger = require('./middleware/logger');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+
+const genres = require('./routes/genres');
+const customer = require('./routes/customers');
+const movies = require('./routes/movies');
+const home = require('./routes/home');
+const rentals = require('./routes/rentals');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -48,6 +50,7 @@ app.use(helmet());
 app.use('/api/genres', genres);
 app.use('/api/customers', customer);
 app.use('/api/movies', movies);
+app.use('/api/rentals', rentals);
 app.use('/', home);
 
 
