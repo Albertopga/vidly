@@ -1,3 +1,4 @@
+require('express-async-errors');
 const authentication = require('./middleware/auth');
 const bp = require('body-parser')
 const config = require('config'); //check the file in /config/custom-environment-variables.json
@@ -14,6 +15,8 @@ const home = require('./routes/home');
 const rentals = require('./routes/rentals');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
+
+const error = require('./middleware/err');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -59,6 +62,8 @@ app.use('/api/rentals', rentals);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/', home);
+
+app.use(error);
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
 
