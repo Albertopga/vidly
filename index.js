@@ -1,4 +1,4 @@
-const authentication = require('./middleware/authentication');
+const authentication = require('./middleware/auth');
 const bp = require('body-parser')
 const config = require('config'); //check the file in /config/custom-environment-variables.json
 const debug = require('debug')('app:startup');

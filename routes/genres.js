@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Genre, validateBody } = require('../models/genres');
+const auth = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
     const result = await Genre.find().sort('name');
@@ -14,7 +15,7 @@ router.get('/:id', async(req, res) => {
     res.status(200).send(genre);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const reqValidation = validateBody(req.body);
     if(reqValidation.error) return res.status(404).send(reqValidation.error.details[0].message) ;
 
