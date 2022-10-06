@@ -1,5 +1,6 @@
 require('express-async-errors');
 const winston = require('winston');
+require('winston-mongodb');
 const bp = require('body-parser')
 const config = require('config'); //check the file in /config/custom-environment-variables.json
 const debug = require('debug')('app:startup');
@@ -24,9 +25,20 @@ const port = process.env.PORT || 3000;
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
-winston.add(new winston.transports.File({ filename: 'logfile.log' }))
+// Captura los errores no encapsulados en express
+winston.handleExceptions(
+    new winston.transports.File({ filename: 'uncaughtException.log' })
+)
 
-if(!config.get('jwtPrivateKey')) {
+// caprtura errores de promesas no controladas
+process.on('unhandledRejection', (ex) => {
+    throw ex
+})
+
+winston.add(new winston.transports.File({ filename: 'logfile.log' }))
+winston.add(new winston.transports.MongoDB({ db: 'mongodb://localhost/vidly', level: 'error' }))
+
+if (!config.get('jwtPrivateKey')) {
     console.error('ERROR: jwtPrivateKey is not defined.')
     process.exit(1)
 }
@@ -42,7 +54,7 @@ mongoose.connect('mongodb://localhost/vidly')
 // o bien
 app.get('env'); // default development
 
-if(app.get('env') === 'development') {
+if (app.get('env') === 'development') {
     app.use(morgan('tiny')); // expample GET /api/genders/ 200 81 - 6.669 ms
     debug('Morgan enabled...');
 }

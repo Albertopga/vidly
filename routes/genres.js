@@ -5,7 +5,7 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
 router.get('/', async (req, res) => {
-	throw new Error('errrrrororor')
+	throw new Error('Genres not find')
 	const result = await Genre.find().sort('name');
 	return res.status(200).send(result);
 });

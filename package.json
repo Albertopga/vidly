@@ -26,7 +26,8 @@
     "mongoose": "^6.5.2",
     "morgan": "^1.10.0",
     "pug": "^3.0.2",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "winston-mongodb": "^5.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"
