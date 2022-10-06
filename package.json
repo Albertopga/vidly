@@ -25,7 +25,8 @@
     "logger": "^0.0.1",
     "mongoose": "^6.5.2",
     "morgan": "^1.10.0",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"

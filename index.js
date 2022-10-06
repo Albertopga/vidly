@@ -1,5 +1,5 @@
 require('express-async-errors');
-const authentication = require('./middleware/auth');
+const winston = require('winston');
 const bp = require('body-parser')
 const config = require('config'); //check the file in /config/custom-environment-variables.json
 const debug = require('debug')('app:startup');
@@ -23,6 +23,8 @@ const port = process.env.PORT || 3000;
 
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
+
+winston.add(new winston.transports.File({ filename: 'logfile.log' }))
 
 if(!config.get('jwtPrivateKey')) {
     console.error('ERROR: jwtPrivateKey is not defined.')
