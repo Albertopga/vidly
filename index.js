@@ -1,10 +1,9 @@
 const authentication = require('./middleware/authentication');
 const bp = require('body-parser')
-const config = require('config');
+const config = require('config'); //check the file in /config/custom-environment-variables.json
 const debug = require('debug')('app:startup');
 const express = require('express');
 const helmet = require('helmet');
-const logger = require('./middleware/logger');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 
@@ -21,6 +20,11 @@ const port = process.env.PORT || 3000;
 
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
+
+if(!config.get('jwtPrivateKey')) {
+    console.error('ERROR: jwtPrivateKey is not defined.')
+    process.exit(1)
+}
 
 // connection
 mongoose.connect('mongodb://localhost/vidly')
@@ -44,12 +48,9 @@ console.log(`app: ${app.get('env')}`);
 app.set('view engine', 'pug'); // motor de template
 app.set('views', './views'); // ruta de los templates
 
-
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(helmet());
-// app.use(logger); middleaware
-// app.use(authentication); middleware
 
 app.use('/api/genres', genres);
 app.use('/api/customers', customer);
@@ -58,13 +59,6 @@ app.use('/api/rentals', rentals);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/', home);
-
-
-// Configuration
-// console.log('Application Name: ' + config.get('name'));
-// console.log('Mail Server: ' + config.get('mail.host'));
-// console.log('Mail Password: ' + config.get('mail.password'));
-
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
 

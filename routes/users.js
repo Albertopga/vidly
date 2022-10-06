@@ -20,15 +20,8 @@ router.post('/', async (req, res) => {
   user.password = await bcrypt.hash(user.password, salt)
 
   await user.save();
-  res.status(200).send(_.pick(user, ["_id", "name", "email"]));
+  const token = user.generateAuthToken()
+  res.header('x-auth-token', token).status(200).send(_.pick(user, ["_id", "name", "email"]))
 })
-
-// router.delete(`/:id`, async(req, res) => {
-//   const user = await User.findByIdAndRemove(req.params.id);
-
-//   if(!user) return res.status(404).send('user to delete not found')
-
-//   res.status(200).send(user);
-// });
 
 module.exports = router
