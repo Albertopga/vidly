@@ -1,12 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const Fawn = require('fawn')
+const config = require('config')
 
 const { Rental, validate } = require('../models/rentals')
 const { Customer } = require('../models/customer')
 const { Movie } = require('../models/movies')
 
-Fawn.init("mongodb://localhost/vidly")
+Fawn.init(config.get('db')) // emulata transacctions on mongoDB
 
 
 router.get('/', async (req, res) => {

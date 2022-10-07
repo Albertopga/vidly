@@ -1,15 +1,17 @@
+const validateObjectId = require('../middleware/validateObjectId')
 const express = require('express');
 const router = express.Router();
 const { Genre, validateBody } = require('../models/genres');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const { default: mongoose } = require('mongoose');
 
 router.get('/', async (req, res) => {
 	const result = await Genre.find().sort('name');
 	return res.status(200).send(result);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', validateObjectId, async (req, res) => {
 	const genre = await Genre.findById(req.params.id);
 
 	if (!genre) return res.status(404).send('genre not found');
@@ -26,9 +28,9 @@ router.post('/', auth, async (req, res) => {
 	res.status(200).send(genre);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', validateObjectId, async (req, res) => {
 	const reqValidation = validateBody(req.body);
-	if (reqValidation.error) return res.status(404).send(reqValidation.error.details[0].message);
+	if (reqValidation.error) return res.status(401).send(reqValidation.error.details[0].message);
 
 	const genre = await Genre.findByIdAndUpdate(req.params.id, { name: req.name }, { new: true });
 

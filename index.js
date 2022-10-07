@@ -5,7 +5,7 @@ const port = process.env.PORT || 3000;
 
 require('./startup/routes')(app)
 require('./startup/db')()
-require('./startup/logger')()
+require('./startup/logging')()
 require('./startup/config')(app)
 require('./startup/validation')()
 
@@ -13,5 +13,9 @@ require('./startup/validation')()
 // o bien --> app.get('env') 
 winston.info(`app env: ${app.get('env')}`);
 
-app.listen(port, () => winston.info(`App listening on port ${port}`));
+const server = app.listen(port, () => {
+  console.log(`=== App listening on port ${port}...`)
+  winston.info(`App listening on port ${port}`)
+});
 
+module.exports = server

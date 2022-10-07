@@ -1,7 +1,9 @@
-const databaseUrl = 'mongodb://localhost/vidly'
+const config = require('config')
 const winston = require('winston');
 require('winston-mongodb');
-require('express-async-errors');
+// require('express-async-errors');
+
+const databaseUrl = config.get('db')
 
 module.exports = function(){
   // Captura los errores no encapsulados en express
@@ -16,5 +18,5 @@ module.exports = function(){
   })
 
   winston.add(new winston.transports.File({ filename: 'logfile.log' }))
-  winston.add(new winston.transports.MongoDB({ db: databaseUrl, level: 'error' }))
+  // winston.add(new winston.transports.MongoDB({ db: databaseUrl, level: 'error' }))
 }
