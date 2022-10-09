@@ -11,7 +11,7 @@ beforeEach(() => {
   token = new User().generateAuthToken()
 })
 afterEach( async () => {
-  server.close()
+  await server.close()
   await Genre.remove({})// reset the DB at initial state
 })
 
