@@ -20,7 +20,7 @@ router.get('/:id', validateObjectId, async (req, res) => {
 
 router.post('/', auth, async (req, res) => {
 	const reqValidation = validateBody(req.body);
-	if (reqValidation.error) return res.status(404).send(reqValidation.error.details[0].message);
+	if (reqValidation.error) return res.status(400).send(reqValidation.error.details[0].message);
 
 	const genre = new Genre({ name: req.body.name });
 	await genre.save();
@@ -30,7 +30,7 @@ router.post('/', auth, async (req, res) => {
 
 router.put('/:id', validateObjectId, async (req, res) => {
 	const reqValidation = validateBody(req.body);
-	if (reqValidation.error) return res.status(401).send(reqValidation.error.details[0].message);
+	if (reqValidation.error) return res.status(400).send(reqValidation.error.details[0].message);
 
 	const genre = await Genre.findByIdAndUpdate(req.params.id, { name: req.name }, { new: true });
 

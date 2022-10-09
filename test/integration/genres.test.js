@@ -1,4 +1,3 @@
-const { expectCt } = require('helmet')
 const request = require('supertest')
 const { Genre } = require('../../models/genres')
 const { User } = require('../../models/users')
@@ -46,24 +45,50 @@ describe('/api/genres', () =>{
   })
 
   describe('POST /', ()=>{
-    it('should resturn 401 if client si not logged in', async()=>{
-      const token = new User().generateAuthToken()
+    let token
+    let name
 
-      const res = await request(server)
-      .post('/api/genres')
-      .set('x-auth-token', token)
-      .send({ name: '1234' })
-      
-      console.log("🚀 ~ file: genres.test.js ~ line 53 ~ it ~ res", res)
-      expect(res.status).toBe(400)
+    beforeEach(() => {
+      token = new User().generateAuthToken()
+      name = 'genretest'
+    })
+
+    const execute = async()=> {
+      return await request(server)
+        .post('/api/genres')
+        .set('x-auth-token', token)
+        .send({ name })
+    }
+
+    it('should resturn 401 if client si not logged in', async()=>{
+      token = ''
+      const res = await execute()
+
+      expect(res.status).toBe(401)
     })
 
     it('should resturn 400 if genre is less than 5 characters', async()=>{
-      const res = await request(server)
-        .post('/api/genres')
-        .send({ name: 'genre1' })
+      name = '1234'
+      const res = await execute()
 
-        expect(res.status).toBe(401)
+      expect(res.status).toBe(400)
+    })
+
+    it('should resturn 400 if genre is more than 50 characters', async()=>{
+      name = new Array(52).join('a')
+      const res = await execute()
+
+      expect(res.status).toBe(400)
+    })
+
+    it('should save the genre if it is valid', async()=>{
+      const res = await execute()
+      const genre = await Genre.find({ name:'genretest' })
+
+      expect(genre).not.toBeNull()
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveProperty('_id')
+      expect(res.body).toHaveProperty('name', 'genretest')
     })
   })
 
