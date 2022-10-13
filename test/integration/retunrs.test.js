@@ -1,3 +1,4 @@
+const moment = require('moment');
 const mongoose = require('mongoose');
 const { Rental } = require('../../models/rentals')
 const { User } = require('../../models/users')
@@ -101,7 +102,17 @@ describe('/api/returns', ()=>{
       await execute()
 
       const rentalInDb = await Rental.findById(rental._id)
-      expect(rentalInDb.dateReturned).toBeDefined()
+      const diff = new Date() - rentalInDb.dateReturned
+      expect(diff).toBeLessThan(10*1000)
+    })
+
+    it('Should return the rental fee if input is valid', async()=>{
+      rental.dateOut = moment().add(-7, 'days').toDate()
+      await rental.save()
+      const res = await execute()
+
+      const rentalInDb = await Rental.findById(rental._id)
+      expect(rentalInDb.rentalFee).toBe(14)
     })
 
 
@@ -109,7 +120,7 @@ describe('/api/returns', ()=>{
 })
 
 // POST /api/return {customerId, movieId}
-// Set the return date
+
 // Calculate the rental fee
 // Increase the stock
 // Return the rental
