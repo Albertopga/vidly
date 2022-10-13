@@ -1,4 +1,3 @@
-const moment = require('moment')
 const auth = require('../middleware/auth')
 const { Movie } = require('../models/movies')
 const { Rental } = require('../models/rentals')
@@ -14,14 +13,12 @@ router.post('/', auth, async (req, res) => {
   if(!rental) return res.status(404).send('No rental found for this customer/movie')
   if(rental.dateReturned) return res.status(400).send('Return already processed')
 
-  rental.dateReturned = new Date()
-  const rentalDays = moment().diff(rental.dateOut, 'days')
-  rental.rentalFee = rentalDays * rental.movie.dailyRentalRate
+  rental.return();
   await rental.save()
 
   await Movie.update( { _id: rental.movie._id}, {$inc: {numberInStock: 1}} )
 
-  return res.status(200).send(rental)
+  return res.send(rental)
 })
 
 

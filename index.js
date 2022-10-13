@@ -8,6 +8,8 @@ require('./startup/db')()
 require('./startup/logging')()
 require('./startup/config')(app)
 require('./startup/validation')()
+require('./startup/prod')
+
 
 // formas de obtener el entorno --> NODE_ENV: ${process.env.NODE_ENV}
 // o bien --> app.get('env') 
