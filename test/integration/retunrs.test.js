@@ -1,5 +1,6 @@
 const moment = require('moment');
 const mongoose = require('mongoose');
+const { Movie } = require('../../models/movies')
 const { Rental } = require('../../models/rentals')
 const { User } = require('../../models/users')
 const request = require('supertest')
@@ -9,6 +10,7 @@ describe('/api/returns', ()=>{
   let server;
   let customerId;
   let movieId;
+  let movie;
   let rental;
   let token;
 
@@ -17,6 +19,14 @@ describe('/api/returns', ()=>{
     customerId = mongoose.Types.ObjectId()
     movieId = mongoose.Types.ObjectId()
     token = new User().generateAuthToken()
+
+    movie =new Movie({
+      _id: movieId,
+      title: '12345',
+      dailyRentalRate: 2,
+      genre: { name: '12345' },
+      numberInStock: 10
+    })
 
     rental = new Rental({
       customer: {
@@ -30,12 +40,15 @@ describe('/api/returns', ()=>{
         dailyRentalRate: 2
       }
     })
+
     await server.close()
+    await movie.save()
     await rental.save()
   })
 
   afterEach(async ()=> {
     await Rental.remove({})// reset the DB at initial state
+    await Movie.remove({})// reset the DB at initial state
   })
 
   const execute = () => {
@@ -109,18 +122,28 @@ describe('/api/returns', ()=>{
     it('Should return the rental fee if input is valid', async()=>{
       rental.dateOut = moment().add(-7, 'days').toDate()
       await rental.save()
-      const res = await execute()
+      await execute()
 
       const rentalInDb = await Rental.findById(rental._id)
       expect(rentalInDb.rentalFee).toBe(14)
     })
 
+    it('Should increase the movie stock if input is valid', async()=>{
+      await execute()
+
+      const movieInDb = await Movie.findById(movie._id)
+      expect(movieInDb.numberInStock).toBe(movie.numberInStock + 1)
+    })
+
+    it('Shoud return the rental if valid request', async()=>{
+      const res = await execute()
+
+      await Rental.findById(rental._id)
+
+      expect(Object.keys(res.body)).toEqual(
+        expect.arrayContaining(['dateOut', 'dateReturned', 'rentalFee', 'customer', 'movie']))
+    })
+
 
   })
 })
-
-// POST /api/return {customerId, movieId}
-
-// Calculate the rental fee
-// Increase the stock
-// Return the rental
