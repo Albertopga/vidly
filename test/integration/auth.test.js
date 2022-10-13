@@ -6,12 +6,12 @@ const mongoose = require('mongoose');
 let server;
 let token;
 
-beforeEach(() => {
+beforeEach(async () => {
   server = require('../../index')
   token = new User().generateAuthToken()
+  await server.close()
 })
 afterEach( async () => {
-  await server.close()
   await Genre.remove({})// reset the DB at initial state
 })
 

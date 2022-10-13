@@ -6,15 +6,16 @@ const mongoose = require('mongoose')
 let server
 
 describe('/api/genres', () =>{
-  beforeEach(()=> { server = require('../../index') })
-  afterEach(async ()=> {
+  beforeEach(async()=> {
+    server = require('../../index')
     await server.close()
-    await Genre.remove({})// reset the DB at initial state
   })
+
+  afterEach(async ()=> { await Genre.remove({})})// reset the DB at initial state
 
   describe('GET /', () =>{
     it('should return all genres', async () =>{
-      // prepare the DB insert values
+      // prepare the DB insert values 
       await Genre.collection.insertMany([
         { name: 'genre1' },
         { name: 'genre2' },
