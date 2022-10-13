@@ -82,8 +82,8 @@ describe('/api/returns', ()=>{
       expect(result.status).toBe(404)
     })
 
-    it.skip('Return 400 if rental is already processed', async()=>{
-      rental.dailyRentalRate = new Date()
+    it('Return 400 if rental is already processed', async()=>{
+      rental.dateReturned = new Date()
       await rental.save()
 
       const result = await execute()
@@ -91,13 +91,13 @@ describe('/api/returns', ()=>{
       expect(result.status).toBe(400)
     })
 
-    it.skip('Return 200 if valid request', async()=>{
+    it('Return 200 if valid request', async()=>{
       const result = await execute()
 
       expect(result.status).toBe(200)
     })
 
-    it.skip('Should set the returnDate if input is valid', async()=>{
+    it('Should set the returnDate if input is valid', async()=>{
       await execute()
 
       const rentalInDb = await Rental.findById(rental._id)

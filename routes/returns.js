@@ -15,8 +15,8 @@ router.post('/', auth, async (req, res) => {
   if(!rental) return res.status(404).send('No rental found for this customer/movie')
   if(rental.dateReturned) return res.status(400).send('Return already processed')
 
-  // rental.dateReturned = 1
-  // await rental.save()
+  rental.dateReturned = new Date()
+  await rental.save()
 
   return res.status(200).send()
 })
